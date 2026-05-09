@@ -353,11 +353,35 @@ Actions and email always above guide content. Guide content always last.
 - python-enterprise-standards skill created for reuse across all projects
 - youtube-transcript-api v1.2.4 compatibility — use instance method not class method
 
-**Next session — commit and deploy:**
-- [ ] Copy all updated Python files to repo folder
-- [ ] Run final local test with 3 URLs
-- [ ] Commit all working files via PR
-- [ ] Create Streamlit Cloud account at streamlit.io
-- [ ] Deploy from GitHub repo
-- [ ] Add live URL to README.md
+### Session 3 — May 9 2026
+**Completed:**
+- App deployed to Streamlit Cloud — live at video-to-pdf-guide-creator.streamlit.app
+- Three production bugs fixed:
+  - Copy button — replaced JS clipboard with native Streamlit st.code() toggle
+  - PDF title — YouTube oEmbed API fetches real video title, 4-level fallback
+  - Non-instructional video — warning message shown, guide still displayed
+- Branch protection ruleset created on GitHub
+- UptimeRobot setup recommended — prevents Streamlit sleep after 2 days
+- README.md updated with live URL
+- Episode 1 Philosophy Script document created — full production guide
+- Series structure confirmed — 10 episodes, one complete item per episode
+- Meta-pitch confirmed — product documents how to build itself
+- Claude.ai vs Claude Code analysis documented for Episode 0/1 content
+- python-enterprise-standards skill created
+- youtube-transcript-fetch skill created
+- Stage 1 COMPLETE — live demo deployed
+
+**Bugs fixed:**
+- youtube-transcript-api v1.2.4: YouTubeTranscriptApi().fetch() not class method
+- Copy button JS not working in Streamlit Cloud iframe sandbox
+- PDF filename not including video title
+- Page reloading on button clicks — fixed with session state
+
+**Next session — Stage 2 begins:**
+- [ ] Set up UptimeRobot — ping app every 24 hours, prevents sleep
+- [ ] Update MASTER_PLAN.md Stage 1 status to COMPLETE
+- [ ] Begin Stage 2 — email capture implementation
+- [ ] src/email_sender.py — SMTP email delivery
+- [ ] Mailchimp integration for subscriber list
+- [ ] Film Episode 1 — philosophy script is ready
 - [ ] Add live URL to LinkedIn profile and GitHub bio

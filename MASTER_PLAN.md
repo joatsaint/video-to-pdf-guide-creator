@@ -310,13 +310,54 @@ the complexity of native development.
 - ADR-004: Prompt as versioned file
 - ADR-005: Email capture as primary CTA
 
-**Next session — Stage 1 build:**
-- [ ] Create Python virtual environment
-- [ ] Install dependencies from requirements.txt
-- [ ] Build src/transcript_fetcher.py
-- [ ] Build src/guide_generator.py + prompts/guide_prompt.txt
-- [ ] Build src/pdf_creator.py
-- [ ] Build app.py — Streamlit UI
-- [ ] Test locally with 3 real YouTube URLs
-- [ ] Deploy to Streamlit Cloud
-- [ ] Add live URL to README.md and LinkedIn profile
+### Session 2 — May 9 2026
+**Completed:**
+- All 4 Python files built and committed:
+  - app.py — Streamlit UI with startup validation, logging, graceful degradation
+  - src/transcript_fetcher.py — YouTube fetch, proxy, rate limiting, retry
+  - src/guide_generator.py — Claude API, token logging, retry, cost alerts
+  - src/pdf_creator.py — ReportLab PDF, bytes only, styled output
+- prompts/guide_prompt.txt — versioned prompt file (ADR-004)
+- src/__init__.py — Python package marker
+- Tier 1 enterprise standards applied to all Python files:
+  - Input sanitization — URL validation before processing
+  - Structured logging — timing, token usage, retry attempts
+  - Retry with exponential backoff — transient vs permanent failure detection
+  - Startup validation via validate_config() — fail fast not at request time
+  - Graceful degradation — PDF failure does not kill guide display
+- python-enterprise-standards skill created and installed
+- youtube-transcript-fetch skill created and installed
+- DECISIONS.md — ADR-006 through ADR-015 added (Tier 2-4 deferred)
+- MASTER_PLAN.md — Stage 6 Chrome extension + Stage 7 PWA + Stage 8 API added
+- CLAUDE.md — Session startup and close checklists updated
+
+**Bugs fixed this session:**
+- transcript_fetcher.py — fixed for youtube-transcript-api v1.2.4
+  - `YouTubeTranscriptApi.get_transcript()` → `YouTubeTranscriptApi().fetch()`
+  - `clean_transcript()` updated for new FetchedTranscript object format
+- app.py — three UI bugs fixed:
+  - Copy button now uses JS clipboard API — true one-click copy, shows ✅ Copied!
+  - PDF filename now includes guide title: `title-step-by-step-guide.pdf`
+  - Session state added — guide persists across all button clicks, no page reload
+- app.py — UI layout improved:
+  - Action buttons (Download PDF, Copy Text, New Guide) moved above guide content
+  - Email capture moved above guide content
+  - User sees all actions without scrolling
+
+**UI layout rule established (now in CLAUDE.md):**
+Actions and email always above guide content. Guide content always last.
+
+**Decisions made this session:**
+- Tier 1 enterprise standards applied immediately — not deferred
+- Tier 2-4 documented as deferred ADRs with explicit triggers
+- python-enterprise-standards skill created for reuse across all projects
+- youtube-transcript-api v1.2.4 compatibility — use instance method not class method
+
+**Next session — commit and deploy:**
+- [ ] Copy all updated Python files to repo folder
+- [ ] Run final local test with 3 URLs
+- [ ] Commit all working files via PR
+- [ ] Create Streamlit Cloud account at streamlit.io
+- [ ] Deploy from GitHub repo
+- [ ] Add live URL to README.md
+- [ ] Add live URL to LinkedIn profile and GitHub bio

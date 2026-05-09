@@ -206,10 +206,55 @@ A/B testing and rollback. See ADR-004.
 
 Before writing any code in a new session:
 - [ ] Read this file completely
-- [ ] Read DECISIONS.md for all active ADRs
+- [ ] Read DECISIONS.md for all active and deferred ADRs
 - [ ] State the session goal as a single deliverable
 - [ ] Confirm which module you're building against which spec
 - [ ] Verify .env.example is current before touching credentials
+- [ ] Confirm logs/ directory exists (auto-created by app.py on first run)
+- [ ] Tier 1 enterprise standards are applied — see python-enterprise-standards skill
+
+## Session Close Checklist
+
+Before ending any session:
+- [ ] Update MASTER_PLAN.md Session Log with what was completed
+- [ ] Update CLAUDE.md if architecture or rules changed
+- [ ] Add new ADR to DECISIONS.md if a significant decision was made
+- [ ] Add deferred ADR if a decision was identified but not yet made
+- [ ] Confirm all new files are downloaded and committed to GitHub
+
+## Session Close — File Integrity Check
+
+Run through this list before every session ends:
+
+**Python files:**
+- [ ] Every new Python file has Tier 1 standards applied
+      (logging, input sanitization, retry where applicable)
+- [ ] Every new Python file is present in outputs/ and downloaded
+- [ ] src/__init__.py exists if a src/ folder was created or modified
+- [ ] All imports in new files are present in requirements.txt
+
+**UI layout rules (app.py):**
+- [ ] Action buttons (Download PDF, Copy Text, New Guide) always appear ABOVE guide content
+- [ ] Email capture always appears ABOVE guide content
+- [ ] Guide content is always the LAST element on the results page
+- [ ] No action requires the user to scroll to find it
+
+**Environment and config:**
+- [ ] .gitignore covers any new directories the app creates
+      (logs/, generated_guides/, output/, __pycache__/, etc.)
+- [ ] .env.example includes any new environment variables added to code
+- [ ] New secrets are in .env only — never hardcoded, never committed
+
+**Documentation:**
+- [ ] CLAUDE.md module specs match the actual files that exist on disk
+- [ ] DECISIONS.md has an ADR for any significant decision made this session
+- [ ] MASTER_PLAN.md session log is updated before closing
+- [ ] README.md reflects current project state (live URL, features, setup)
+
+**Repository:**
+- [ ] All files downloaded to repo folder before git add
+- [ ] git status reviewed before git commit — no unintended files staged
+- [ ] PR created, CI passes, PR merged, branch deleted, master pulled
 
 ---
 

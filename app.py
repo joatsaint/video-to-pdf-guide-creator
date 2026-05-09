@@ -95,15 +95,49 @@ if 'show_copy' not in st.session_state:
 
 
 # ── Helper — extract title from guide for PDF filename ────────────────────────
-def _extract_title(guide_text: str) -> str:
-    """Extract title from guide markdown for use as PDF filename."""
+def _extract_title(guide_text: str, url: str = '') -> str:
+    """
+    Extract title from guide markdown for use as PDF filename.
+    Priority:
+    1. ## heading from guide text
+    2. Video title from YouTube oEmbed API (no API key needed)
+    3. Sanitized video ID from URL
+    4. Default fallback
+    """
+    # Priority 1 — extract ## heading from guide
     match = re.search(r'^## (.+)$', guide_text, re.MULTILINE)
     if match:
         title = match.group(1).strip()
-        # Sanitize for filename — keep alphanumeric, spaces, hyphens
-        title = re.sub(r'[^\w\s-]', '', title)
-        title = re.sub(r'\s+', '-', title.strip()).lower()
-        return title[:60]  # max 60 chars
+        # Skip if it looks like an error or refusal
+        skip_phrases = ['cannot', 'unable', 'no guide', 'not a', 'honest']
+        if not any(phrase in title.lower() for phrase in skip_phrases):
+            title = re.sub(r'[^\w\s-]', '', title)
+            title = re.sub(r'\s+', '-', title.strip()).lower()
+            return title[:60]
+
+    # Priority 2 — fetch video title from YouTube oEmbed (free, no API key)
+    if url:
+        try:
+            import urllib.request
+            import json
+            oembed_url = f"https://www.youtube.com/oembed?url={url}&format=json"
+            with urllib.request.urlopen(oembed_url, timeout=5) as response:
+                data = json.loads(response.read())
+                title = data.get('title', '')
+                if title:
+                    title = re.sub(r'[^\w\s-]', '', title)
+                    title = re.sub(r'\s+', '-', title.strip()).lower()
+                    return title[:60]
+        except Exception:
+            pass  # fall through to next option
+
+    # Priority 3 — extract video ID from URL as last resort
+    if url:
+        vid_match = re.search(r'(?:v=|youtu\.be/|shorts/)([a-zA-Z0-9_-]{11})', url)
+        if vid_match:
+            return f"youtube-{vid_match.group(1)}"
+
+    # Priority 4 — default
     return 'step-by-step-guide'
 
 
@@ -180,7 +214,7 @@ if generate_btn and url.strip():
             # Store in session state so it survives button clicks
             st.session_state.guide_text = guide_text
             st.session_state.guide_url = url.strip()
-            st.session_state.guide_title = _extract_title(guide_text)
+            st.session_state.guide_title = _extract_title(guide_text, url.strip())
             status.update(label='✅ Guide generated', state='complete')
         except ValueError as e:
             status.update(label='❌ Empty transcript', state='error')
@@ -219,39 +253,10 @@ if st.session_state.guide_text:
             logger.error("PDF creation failed: %s", e)
             st.warning(f'PDF unavailable: {e}')
 
-    # Copy text — JS clipboard API for true one-click copy
+    # Copy text — toggle st.code() which has native copy button built in
     with action_col2:
-        # Escape backticks and backslashes for safe JS template literal
-        safe_text = guide_text.replace('\\', '\\\\').replace('`', '\\`')
-        st.markdown(f"""
-        <script>
-        function copyGuide() {{
-            const text = `{safe_text}`;
-            navigator.clipboard.writeText(text).then(function() {{
-                document.getElementById('copybtn').innerText = '✅ Copied!';
-                setTimeout(function() {{
-                    document.getElementById('copybtn').innerText = '📋 Copy Text';
-                }}, 2000);
-            }}).catch(function() {{
-                document.getElementById('copybtn').innerText = '❌ Try again';
-                setTimeout(function() {{
-                    document.getElementById('copybtn').innerText = '📋 Copy Text';
-                }}, 2000);
-            }});
-        }}
-        </script>
-        <button id="copybtn" onclick="copyGuide()" style="
-            width:100%;
-            padding:0.45rem 1rem;
-            background:#ffffff;
-            border:1px solid #d1d5db;
-            border-radius:6px;
-            font-size:0.875rem;
-            cursor:pointer;
-            font-family:sans-serif;
-            color:#374151;
-        ">📋 Copy Text</button>
-        """, unsafe_allow_html=True)
+        if st.button('📋 Copy Text', use_container_width=True):
+            st.session_state.show_copy = not st.session_state.show_copy
 
     # Clear / start over
     with action_col3:
@@ -281,8 +286,34 @@ if st.session_state.guide_text:
         "Unsubscribe anytime."
     )
 
+    # Show copy text area when toggled — st.code has native copy button
+    if st.session_state.show_copy:
+        st.code(guide_text, language=None)
+
     # ── Guide text — shown below all actions ───────────────────────────────────
     st.divider()
+
+    # Detect non-instructional content and display appropriate UI
+    non_instructional_signals = [
+        "cannot create a step-by-step guide",
+        "no instructional",
+        "no steps or procedures",
+        "contains no instructional",
+        "song lyrics",
+        "i must be honest",
+        "i cannot create",
+    ]
+    is_non_instructional = any(
+        signal in guide_text.lower() for signal in non_instructional_signals
+    )
+
+    if is_non_instructional:
+        st.warning(
+            "⚠️ **This video doesn't contain how-to content.** "
+            "Try a tutorial, recipe, DIY repair, or any video that walks "
+            "through a process step by step. The guide below explains what was found."
+        )
+
     st.markdown('<div class="guide-box">', unsafe_allow_html=True)
     st.markdown(guide_text)
     st.markdown('</div>', unsafe_allow_html=True)

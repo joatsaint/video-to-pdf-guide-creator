@@ -198,6 +198,129 @@ Decisions to document when made:
 - [ ] Streamlit Cloud vs self-hosted deployment
 - [ ] Privacy policy hosting approach
 
+### ADR-016 — UptimeRobot for Streamlit Cloud Keep-Alive
+**Date:** May 2026
+**Status:** Active
+
+**Context:**
+Streamlit Community Cloud free tier hibernates apps after 2 consecutive
+days of zero traffic. A sleeping app takes ~30 seconds to wake — acceptable
+for occasional use but unacceptable for a portfolio demo or public product.
+
+**Decision:**
+Use UptimeRobot free tier to ping the app URL every 12 hours.
+Monitor ID: 803030948
+URL: https://video-to-pdf-guide-creator.streamlit.app/
+
+**Alternatives considered:**
+- GitHub Actions scheduled workflow — free but adds complexity to repo
+- Upgrade to paid Streamlit hosting — unnecessary at current stage
+- Migrate to Railway/Render — Tier 4 decision, deferred to Stage 4
+
+**Reasoning:**
+UptimeRobot free tier pings every 12 hours — well within the 48-hour
+sleep threshold. Zero cost, zero repo complexity, 5-minute setup.
+Solves the problem completely at current scale.
+
+**Upgrade trigger:**
+When app has paying customers requiring guaranteed uptime SLA —
+migrate to Railway ($5/month) and document as ADR update.
+
+**Consequences:**
+- ✅ App stays alive indefinitely at zero cost
+- ✅ No changes to repo or deployment pipeline
+- ✅ UptimeRobot also provides uptime monitoring and alerts
+- ⚠️ Free tier limited to 50 monitors — not a concern for this project
+
+---
+
+### ADR-006 — Error Tracking with Sentry
+**Status:** Deferred — implement before public launch
+**Decision:** Add Sentry SDK for unhandled exception capture
+**Trigger:** Before sharing public URL beyond portfolio audience
+**Effort:** 30 minutes — one line + SENTRY_DSN env var
+**Notes:** Free tier at sentry.io. Silently disabled if DSN is empty — safe for local dev.
+
+---
+
+### ADR-007 — Per-Session Rate Limiting
+**Status:** Deferred — implement before public launch
+**Decision:** Limit guides per session to prevent API cost abuse
+**Trigger:** Before promoting app beyond portfolio audience
+**Effort:** 15 minutes — Streamlit session_state counter
+**Default:** 5 guides per session on free tier
+**Notes:** Session-based only. IP-based Redis rate limiting is Tier 4 (ADR-014).
+
+---
+
+### ADR-008 — GitHub Actions CI Pipeline
+**Status:** Deferred — implement before public launch
+**Decision:** Automated test + pip audit on every push
+**Trigger:** Before first public commit of working app
+**Effort:** 30 minutes — copy pattern from enterprise-ai-pipeline
+**Notes:** Blocks merges to master if tests fail.
+
+---
+
+### ADR-009 — Dependency Vulnerability Scanning
+**Status:** Deferred — implement before public launch
+**Decision:** pip audit in CI + pre-deployment manual check
+**Trigger:** Before public launch
+**Effort:** 10 minutes — pip install pip-audit, add to CI
+**Notes:** Run manually before every deployment: `pip audit`
+
+---
+
+## Deferred ADRs — Tier 3 (Before Paying Customers)
+
+### ADR-010 — Pre-commit Hooks
+**Status:** Deferred — implement before Stage 4
+**Decision:** black + ruff + detect-secrets on every commit
+**Trigger:** Before first paying customer
+**Effort:** 30 minutes — .pre-commit-config.yaml + pre-commit install
+**Notes:** detect-secrets prevents accidental API key commits.
+
+---
+
+### ADR-011 — Full Type Hints and mypy
+**Status:** Deferred — implement before Stage 4
+**Decision:** mypy --strict on all src/ files
+**Trigger:** Before first paying customer
+**Effort:** 2-3 hours
+**Notes:** Run: `mypy --strict src/`
+
+---
+
+### ADR-012 — CHANGELOG.md
+**Status:** Deferred — implement before Stage 4
+**Decision:** Semantic versioning + changelog per release
+**Trigger:** Before first paying customer
+**Format:** Keep a Changelog (keepachangelog.com)
+
+---
+
+## Deferred ADRs — Tier 4 (Production Scale)
+
+### ADR-013 — Dockerfile and Container Deployment
+**Status:** Deferred — implement at Stage 5
+**Decision:** Containerize for reproducible deployment everywhere
+**Trigger:** Stage 5 Next.js rebuild begins
+
+---
+
+### ADR-014 — Redis Rate Limiting
+**Status:** Deferred — implement when session rate limiting proves insufficient
+**Decision:** IP-based rate limiting via Redis
+**Trigger:** Abuse detected OR Stage 4 paying customers
+**Notes:** ~$5/month on Railway or Redis Cloud free tier.
+
+---
+
+### ADR-015 — Health Check Endpoint
+**Status:** Deferred — implement at Stage 5 with FastAPI backend
+**Decision:** /health endpoint for load balancer and monitoring
+**Trigger:** Stage 5 Next.js + FastAPI rebuild
+
 ---
 
 ## Template — Copy This for New Decisions

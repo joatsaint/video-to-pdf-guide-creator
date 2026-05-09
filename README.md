@@ -26,7 +26,7 @@ guide you can print, save as PDF, or email to yourself.
 
 ## Live Demo
 
-🔗 **[Launch the app →]** *(Streamlit Cloud URL — coming soon)*
+🔗 **[Launch the app → video-to-pdf-guide-creator.streamlit.app](https://video-to-pdf-guide-creator.streamlit.app/)**
 
 ---
 

@@ -21,6 +21,7 @@ from youtube_transcript_api import (
     NoTranscriptFound,
     VideoUnavailable,
 )
+from youtube_transcript_api.proxies import WebshareProxyConfig, GenericProxyConfig
 
 # ── Logging ────────────────────────────────────────────────────────────────────
 logger = logging.getLogger(__name__)
@@ -135,14 +136,14 @@ def clean_transcript(raw) -> str:
 
 
 # ── Retry logic ────────────────────────────────────────────────────────────────
-def _fetch_with_retry(video_id: str, proxies: dict | None) -> list:
+def _fetch_with_retry(video_id: str, proxy_config=None) -> list:
     """
     Fetch transcript with exponential backoff retry on transient failures.
     Does NOT retry on permanent failures (disabled, unavailable).
 
     Args:
-        video_id: YouTube video ID
-        proxies:  Optional proxy configuration dict
+        video_id:     YouTube video ID
+        proxy_config: Optional ProxyConfig object (WebshareProxyConfig or GenericProxyConfig)
 
     Returns:
         Raw transcript list from YouTubeTranscriptApi
@@ -159,7 +160,7 @@ def _fetch_with_retry(video_id: str, proxies: dict | None) -> list:
                 )
                 time.sleep(delay)
 
-            api = YouTubeTranscriptApi()
+            api = YouTubeTranscriptApi(proxy_config=proxy_config)
             return api.fetch(video_id)
 
         except (TranscriptsDisabled, NoTranscriptFound, VideoUnavailable):
@@ -209,7 +210,7 @@ def fetch_transcript(url: str, use_proxy: bool = False) -> str:
     time.sleep(random.uniform(1, 3))
 
     try:
-        raw = _fetch_with_retry(video_id, proxies)
+        raw = _fetch_with_retry(video_id, proxy_config)
         text = clean_transcript(raw)
 
         if not text:

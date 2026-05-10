@@ -201,11 +201,25 @@ def fetch_transcript(url: str, use_proxy: bool = False) -> str:
 
     logger.info("Fetching transcript for video_id=%s", video_id)
 
-    proxies = None
+    # Proxy configuration — v1.2.4 uses ProxyConfig objects not dict
+    proxy_config = None
     if use_proxy:
+        proxy_username = os.environ.get('WEBSHARE_PROXY_USERNAME', '')
+        proxy_password = os.environ.get('WEBSHARE_PROXY_PASSWORD', '')
         proxy_url = os.environ.get('WEBSHARE_PROXY_URL', '')
-        if proxy_url:
-            proxies = {'http': proxy_url, 'https': proxy_url}
+
+        if proxy_username and proxy_password:
+            proxy_config = WebshareProxyConfig(
+                proxy_username=proxy_username,
+                proxy_password=proxy_password,
+            )
+            logger.info("Using WebshareProxyConfig for video_id=%s", video_id)
+        elif proxy_url:
+            proxy_config = GenericProxyConfig(
+                http_url=proxy_url,
+                https_url=proxy_url,
+            )
+            logger.info("Using GenericProxyConfig for video_id=%s", video_id)
 
     time.sleep(random.uniform(1, 3))
 

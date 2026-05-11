@@ -14,7 +14,7 @@ Does this get me to first paying customer faster? If no — defer it.
 ## STAGE 1 — Live Demo (Portfolio Priority)
 **Goal:** Working Streamlit app deployed at a public URL
 **Timeline:** 1-2 days
-**Status:** IN PROGRESS
+**Status:** ✅ COMPLETE — live at video-to-pdf-guide-creator.streamlit.app
 
 **What gets built:**
 - [ ] `app.py` — Streamlit UI with URL input and guide display
@@ -385,3 +385,46 @@ Actions and email always above guide content. Guide content always last.
 - [ ] Mailchimp integration for subscriber list
 - [ ] Film Episode 1 — philosophy script is ready
 - [ ] Add live URL to LinkedIn profile and GitHub bio
+
+### Session 4 — May 10 2026
+**Completed:**
+- Proxy fixed for youtube-transcript-api v1.2.4 on Streamlit Cloud
+  - Switched from dict-based proxy to WebshareProxyConfig object
+  - Fixed proxy_config variable name error (stale proxies reference removed)
+  - Webshare credentials: username pgguzrga-rotate confirmed correct
+  - App now fetches transcripts successfully in production
+- Copy button fixed for Streamlit Cloud iframe sandbox
+  - JS clipboard replaced with native st.code() toggle
+- Non-instructional video detection added to app.py
+  - Warning message shown when Claude cannot generate guide
+- PDF title fixed — YouTube oEmbed API fetches real video title
+  - 4-level fallback: guide heading → oEmbed → video ID → default
+- UptimeRobot configured — pings every 12 hours, prevents sleep
+  - Monitor ID: 803030948
+  - ADR-016 documented in DECISIONS.md
+- Branch protection ruleset created on GitHub
+- ai-frontend-best-practices skill created and installed
+- python-enterprise-standards skill installed (was missing from skills folder)
+- youtube-transcript-fetch skill confirmed installed
+- Stage 1 status updated to COMPLETE
+- Three topic summaries created and saved:
+  - Topic 1: GitHub Repo Professionalism + Portfolio Strategy
+  - Topic 2: Google Drive RAG Organizer
+  - Topic 3: Vehicle Maintenance Report App
+- SA Game Plan document created — Systems Analyst II job search strategy
+- MIT License added to both repos (enterprise-ai-pipeline + video-to-pdf-guide-creator)
+
+**Decisions made this session:**
+- Google Drive RAG organizer — build as MCP server not public web app
+- Vehicle Maintenance App — file in PRODUCT_IDEAS after Google Drive RAG
+- Systems Analyst II identified as primary near-term job target
+- ai-frontend-best-practices skill defines UI standard for all future projects
+
+**Next session — Stage 2 + job search:**
+- [ ] Begin Stage 2 — src/email_sender.py SMTP delivery
+- [ ] Apply Tier 2 frontend standards from ai-frontend-best-practices skill
+  - Skeleton screen loading state
+- [ ] Apply to 3-5 Houston-area SA roles
+- [ ] Write SA-targeted LinkedIn Article 1
+- [ ] Add README badges to both repos
+- [ ] Film Episode 1 — philosophy script is ready

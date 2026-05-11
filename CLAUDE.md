@@ -212,6 +212,7 @@ Before writing any code in a new session:
 - [ ] Verify .env.example is current before touching credentials
 - [ ] Confirm logs/ directory exists (auto-created by app.py on first run)
 - [ ] Tier 1 enterprise standards are applied — see python-enterprise-standards skill
+- [ ] Any UI work must follow ai-frontend-best-practices skill — load it before touching app.py
 
 ## Session Close Checklist
 
@@ -233,11 +234,16 @@ Run through this list before every session ends:
 - [ ] src/__init__.py exists if a src/ folder was created or modified
 - [ ] All imports in new files are present in requirements.txt
 
-**UI layout rules (app.py):**
+**UI layout rules (app.py) — see ai-frontend-best-practices skill for full standard:**
 - [ ] Action buttons (Download PDF, Copy Text, New Guide) always appear ABOVE guide content
 - [ ] Email capture always appears ABOVE guide content
 - [ ] Guide content is always the LAST element on the results page
 - [ ] No action requires the user to scroll to find it
+- [ ] Privacy disclaimer visible near URL input
+- [ ] Accuracy warning visible near guide content
+- [ ] Loading state uses skeleton screen not plain spinner
+- [ ] Copy button morphs to Copied! for 2 seconds after click
+- [ ] All buttons use use_container_width=True for mobile touch targets
 
 **Environment and config:**
 - [ ] .gitignore covers any new directories the app creates
@@ -281,6 +287,6 @@ Critical variables:
 
 ---
 
-*Version 1.0 — May 2026*
-*Update this file whenever architecture changes or new modules are added*
+*Version 1.1 — May 2026*
+*Updated: ai-frontend-best-practices skill added to startup checklist and UI rules*
 *Never let CLAUDE.md fall behind the actual codebase*

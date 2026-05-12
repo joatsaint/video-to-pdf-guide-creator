@@ -428,3 +428,54 @@ Actions and email always above guide content. Guide content always last.
 - [ ] Write SA-targeted LinkedIn Article 1
 - [ ] Add README badges to both repos
 - [ ] Film Episode 1 — philosophy script is ready
+
+### Session 5 — May 10 2026
+**Completed:**
+- CLAUDE.md updated to v1.1:
+  - ai-frontend-best-practices skill added to session startup checklist
+  - UI layout rules expanded with 5 new checklist items from skill
+- app.py overhauled using ai-frontend-best-practices skill:
+  - CSS completely rebuilt — soft depth shadows, 12px border radius, neutral gray base
+  - Skeleton screen loading states — shimmer animation replaces plain spinner
+  - Privacy + accuracy trust badges added — mandatory per skill standard
+  - Bottom Line summary — extracts guide Summary, displays in blue card (progressive disclosure)
+  - Copy button morphs to Copied! for 2 seconds then resets
+  - Session state consolidated into single defaults dict
+  - Proxy detection fixed — checks both WEBSHARE_PROXY_URL and WEBSHARE_PROXY_USERNAME
+- src/email_sender.py built — Stage 2 email delivery COMPLETE:
+  - Gmail SMTP via App Password
+  - Input validation, structured logging, graceful error handling
+  - Branded HTML email template with trust badges
+  - PDF attached with correct filename
+  - Sends from region5dl@gmail.com
+- .env.example updated with SMTP_EMAIL and SMTP_PASSWORD
+- .env updated locally with Gmail App Password
+- Streamlit Cloud secrets updated with SMTP credentials
+- ai-frontend-best-practices skill created and installed
+- python-enterprise-standards skill reinstalled (was missing)
+- Three topic summary documents created:
+  - Topic 1: GitHub Repo Professionalism
+  - Topic 2: Google Drive RAG Organizer
+  - Topic 3: Vehicle Maintenance Report App
+- SA Game Plan document created — 6 sections
+- MIT License added to both repos
+- LinkedIn headline + About section updated — SA-first positioning
+- SA Article 1 scheduled — May 19 7AM CST
+- Gartner YouTube channel identified as fit for enterprise-ai-pipeline
+- env.example conflict resolved — removed undotted copy from repo folder
+
+**Decisions made this session:**
+- Gmail SMTP for email delivery — swap to SendGrid when volume justifies it
+- ai-frontend-best-practices skill is the UI standard for all future projects
+- SA Article 1 goes to SA-targeted audience, existing series continues in parallel
+- Gartner channel to be added to channels.json next session
+
+**Stage 2 status:** Email delivery COMPLETE
+**Next session — Stage 2 polish + job search:**
+- [ ] Test email delivery on live Streamlit app end to end
+- [ ] Add Gartner to channels.json in enterprise-ai-pipeline
+- [ ] Apply to 3-5 Houston-area SA roles
+- [ ] README badges on both repos
+- [ ] Schedule Articles 2-4 with checklist applied
+- [ ] Reddit — first answer in r/sysadmin
+- [ ] Film Episode 1 — philosophy script is ready

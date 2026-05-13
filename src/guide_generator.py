@@ -121,7 +121,12 @@ def _normalize(guide: dict) -> dict:
         "tips": [str(t).strip() for t in (guide.get("tips") or []) if str(t).strip()],
     }
 
-
+def validate_config() -> None:
+    """Validate required environment variables are present."""
+    if not _get_api_key():
+        raise EnvironmentError(
+            "ANTHROPIC_API_KEY is not set. Add it to your .env file or Streamlit secrets."
+        )
 # -----------------------------------------------------------------------------
 # Rule-based fallback. Used only when no API key is configured (e.g. local
 # dev before secrets are set). Not for production traffic.

@@ -252,7 +252,12 @@ def _skeleton_html(widths=None):
     )
     return f'<div style="padding:0.5rem 0">{lines}</div>'
 
-
+def validate_config() -> None:
+    """Validate required environment variables are present."""
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise EnvironmentError(
+            "ANTHROPIC_API_KEY is not set. Add it to your .env file or Streamlit secrets."
+        )
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown('<p class="main-title">📋 Video-to-PDF Guide Creator</p>', unsafe_allow_html=True)
 st.markdown(

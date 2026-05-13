@@ -103,29 +103,50 @@ st.markdown("""
 <style>
     /* ── Base layout ── */
     .block-container {
-        max-width: 700px;
-        padding-top: 3rem;
-        padding-bottom: 3rem;
+        max-width: 860px;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+
+    /* ── Make Streamlit inputs + buttons larger ── */
+    .stTextInput input {
+        font-size: 1.1rem !important;
+        padding: 0.85rem 1rem !important;
+        height: auto !important;
+    }
+    .stButton button {
+        font-size: 1.05rem !important;
+        padding: 0.7rem 1.25rem !important;
+        height: auto !important;
+    }
+    .stExpander {
+        font-size: 1rem !important;
+    }
+    .stExpander summary {
+        font-size: 1rem !important;
+        padding: 0.75rem 1rem !important;
     }
 
     /* ── Header ── */
     .app-header {
         text-align: center;
-        margin-bottom: 2.5rem;
+        margin-bottom: 3rem;
     }
     .main-title {
-        font-size: 2.2rem;
+        font-size: 3rem;
         font-weight: 800;
         color: #F9FAFB;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.6rem;
         line-height: 1.2;
         letter-spacing: -0.5px;
     }
     .subtitle {
-        font-size: 1.05rem;
+        font-size: 1.2rem;
         color: #9CA3AF;
         margin-top: 0;
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
     /* ── Input area ── */
@@ -136,8 +157,8 @@ st.markdown("""
     /* ── Timing hint ── */
     .timing-hint {
         color: #6B7280;
-        font-size: 0.85rem;
-        line-height: 2.6rem;
+        font-size: 1rem;
+        line-height: 3rem;
         padding-left: 0.5rem;
     }
 
@@ -146,26 +167,26 @@ st.markdown("""
         background: #1E2330;
         border: 1px solid #2D3748;
         border-radius: 12px;
-        padding: 1.75rem;
+        padding: 2.25rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         margin-top: 0.5rem;
     }
     .guide-box h2 {
         color: #F9FAFB;
-        font-size: 1.4rem;
+        font-size: 1.7rem;
         margin-top: 0;
     }
     .guide-box h3 {
         color: #E5E7EB;
-        font-size: 1.05rem;
-        margin-top: 1.25rem;
+        font-size: 1.15rem;
+        margin-top: 1.5rem;
         border-bottom: 1px solid #2D3748;
-        padding-bottom: 0.3rem;
+        padding-bottom: 0.35rem;
     }
     .guide-box p, .guide-box li {
         color: #D1D5DB;
-        font-size: 0.95rem;
-        line-height: 1.7;
+        font-size: 1rem;
+        line-height: 1.8;
     }
 
     /* ── Step cards ── */
@@ -173,36 +194,36 @@ st.markdown("""
         background: #252B3B;
         border: 1px solid #374151;
         border-radius: 8px;
-        padding: 1rem 1.25rem;
-        margin: 0.6rem 0;
+        padding: 1.1rem 1.4rem;
+        margin: 0.7rem 0;
     }
     .step-number {
         display: inline-block;
         background: #3B82F6;
         color: white;
-        font-size: 0.75rem;
+        font-size: 0.85rem;
         font-weight: 700;
         border-radius: 4px;
-        padding: 0.1rem 0.45rem;
-        margin-right: 0.5rem;
+        padding: 0.15rem 0.55rem;
+        margin-right: 0.6rem;
         vertical-align: middle;
     }
     .step-title {
         font-weight: 600;
         color: #F3F4F6;
-        font-size: 0.97rem;
+        font-size: 1.05rem;
         vertical-align: middle;
     }
     .step-body {
         color: #9CA3AF;
-        font-size: 0.9rem;
-        margin-top: 0.4rem;
-        line-height: 1.6;
+        font-size: 0.97rem;
+        margin-top: 0.5rem;
+        line-height: 1.7;
     }
     .step-time {
         color: #6B7280;
-        font-size: 0.78rem;
-        margin-top: 0.3rem;
+        font-size: 0.85rem;
+        margin-top: 0.35rem;
     }
 
     /* ── Bottom Line summary card ── */
@@ -210,35 +231,35 @@ st.markdown("""
         background: #1E3A5F;
         border: 1px solid #2563EB;
         border-radius: 8px;
-        padding: 0.85rem 1.1rem;
-        font-size: 0.97rem;
+        padding: 1rem 1.35rem;
+        font-size: 1.05rem;
         color: #BFDBFE;
         font-weight: 500;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.5rem;
     }
 
     /* ── Trust badges — subtle, below actions ── */
     .trust-row {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.6rem;
         flex-wrap: wrap;
-        margin: 1.25rem 0 0.5rem 0;
+        margin: 1.5rem 0 0.5rem 0;
     }
     .trust-badge-privacy {
         background: transparent;
         color: #6B7280;
         border: 1px solid #374151;
         border-radius: 6px;
-        padding: 0.2rem 0.65rem;
-        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.85rem;
     }
     .trust-badge-accuracy {
         background: transparent;
         color: #6B7280;
         border: 1px solid #374151;
         border-radius: 6px;
-        padding: 0.2rem 0.65rem;
-        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.85rem;
     }
 
     /* ── Success badge ── */
@@ -247,22 +268,22 @@ st.markdown("""
         background: #052E16;
         color: #86EFAC;
         border: 1px solid #166534;
-        padding: 0.25rem 0.85rem;
+        padding: 0.35rem 1rem;
         border-radius: 6px;
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.85rem;
     }
 
     /* ── Section label ── */
     .section-label {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #6B7280;
-        margin-bottom: 0.5rem;
-        margin-top: 1.5rem;
+        margin-bottom: 0.6rem;
+        margin-top: 1.75rem;
     }
 
     /* ── Skeleton screen animation ── */
@@ -271,7 +292,7 @@ st.markdown("""
         background-size: 200% 100%;
         animation: shimmer 1.5s infinite;
         border-radius: 6px;
-        margin: 8px 0;
+        margin: 10px 0;
     }
     @keyframes shimmer {
         0%   { background-position: 200% 0; }
@@ -285,23 +306,23 @@ st.markdown("""
         border: 1px solid #166534;
         color: #86EFAC;
         border-radius: 20px;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.82rem;
-        margin: 0.2rem 0.2rem 0.2rem 0;
+        padding: 0.3rem 0.9rem;
+        font-size: 0.9rem;
+        margin: 0.25rem 0.25rem 0.25rem 0;
     }
 
     /* ── Footer ── */
     .footer-text {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
         color: #4B5563;
         text-align: center;
-        margin-top: 2.5rem;
+        margin-top: 3rem;
     }
     .footer-text a { color: #6B7280; }
     .footer-text a:hover { color: #9CA3AF; }
 
     /* ── Divider spacing ── */
-    hr { margin: 1.75rem 0 !important; border-color: #1F2937 !important; }
+    hr { margin: 2rem 0 !important; border-color: #1F2937 !important; }
 </style>
 """, unsafe_allow_html=True)
 

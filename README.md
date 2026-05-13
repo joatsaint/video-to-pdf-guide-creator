@@ -1,131 +1,109 @@
-# Video-to-PDF-Guide-Creator
+# video-to-pdf-guide-creator
 
-**Convert any YouTube how-to video into a printable step-by-step guide in seconds.**
+Turn any YouTube how-to video into a clean, printable step-by-step guide.
+Paste a URL → transcript is fetched → Claude structures it into steps → save as PDF, email to yourself, or copy as text.
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Streamlit](https://img.shields.io/badge/built%20with-Streamlit-FF4B4B.svg)](https://streamlit.io)
-[![Claude API](https://img.shields.io/badge/powered%20by-Claude%20API-orange.svg)](https://anthropic.com)
-
----
-
-## What It Does
-
-Paste a YouTube URL. Get a formatted, printable step-by-step guide.
-
-No more pausing and rewinding. No more trying to remember what the video said.
-The tool extracts the transcript, passes it to Claude AI, and returns a clean
-guide you can print, save as PDF, or email to yourself.
-
-**Built for:**
-- DIY homeowners following repair or improvement tutorials
-- Home cooks following recipe videos
-- Small businesses converting their tutorial library into printable guides
-- Anyone who learns better from reading than watching
+**Live URL:** _set after first Streamlit deploy_
 
 ---
 
-## Live Demo
+## Repo structure
 
-🔗 **[Launch the app → video-to-pdf-guide-creator.streamlit.app](https://video-to-pdf-guide-creator.streamlit.app/)**
-
----
-
-## Features
-
-**MVP (Current)**
-- Paste any YouTube URL with a transcript
-- Receive a formatted step-by-step guide with materials list and tips
-- Copy guide to clipboard
-- Email guide to yourself (builds opt-in list)
-- Download as PDF
-
-**Coming Next**
-- User-generated guide library (public, searchable)
-- Small business bulk conversion (up to 50 videos)
-- White-label guides with business branding
-- API access for agencies
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | Streamlit |
-| AI | Anthropic Claude API (claude-haiku) |
-| Transcript Fetch | youtube-transcript-api + Webshare proxy |
-| PDF Generation | ReportLab or WeasyPrint |
-| Email | SMTP / Mailchimp API |
-| Hosting | Streamlit Cloud (MVP) → Vercel (Next.js) |
-| Future | Next.js + PostgreSQL |
+```
+.
+├── streamlit_app.py            ← Streamlit entry point (UI + flow)
+├── src/
+│   ├── __init__.py
+│   └── guide_generator.py      ← ADR-003: ALL LLM calls live here, nowhere else
+├── prompts/
+│   └── guide_prompt.txt        ← ADR-004: versioned prompt, loaded at runtime
+├── requirements.txt
+├── .streamlit/
+│   └── config.toml             ← Dark theme to match the UI
+├── index.html                  ← Design reference: standalone HTML prototype
+├── app.jsx                     ← React source for the prototype
+├── tweaks-panel.jsx            ← Tweaks panel for the prototype
+├── SPEC.md
+├── DECISIONS.md
+├── CLAUDE.md
+├── LICENSE
+└── README.md
+```
 
 ---
 
-## Local Development
+## Architecture (compliance with DECISIONS.md)
 
-**Prerequisites:**
-- Python 3.10+
-- Anthropic API key
-- Webshare proxy credentials (optional for local testing)
+| ADR | Implementation |
+|-----|---------------|
+| **ADR-001** Streamlit MVP | `streamlit_app.py` is the deploy target. Pure-Python, no build step. |
+| **ADR-002** Haiku model | `src/guide_generator.py` → `MODEL = "claude-haiku-4-5"`. Override via `GUIDE_MODEL` env var for A/B testing without code changes. |
+| **ADR-003** Model-agnostic isolation | The `anthropic` SDK is imported in `src/guide_generator.py` ONLY. Switching to Bedrock, Gemini, or Ollama requires changing one file. |
+| **ADR-004** Prompt as versioned file | `prompts/guide_prompt.txt` is loaded at call time. Edit and commit independently of code; git history is the change log. |
+| **ADR-005** Email-first CTA | "Email this guide to me" is the primary (purple gradient) button on the result page. "Download PDF" is secondary. |
 
-**Setup:**
+---
+
+## Local dev
+
 ```bash
-git clone https://github.com/joatsaint/video-to-pdf-guide-creator.git
-cd video-to-pdf-guide-creator
-python -m venv venv
-venv\Scripts\activate        # Windows
 pip install -r requirements.txt
-cp .env.example .env
-# Add your API keys to .env
-streamlit run app.py
+export ANTHROPIC_API_KEY="sk-ant-..."   # optional but recommended
+streamlit run streamlit_app.py
 ```
 
+Without an API key the app runs in **fallback mode** — heuristic sentence-chunking. Useful for local UI work; not production-quality.
+
+## Deploy to streamlit.app
+
+1. Push this repo to GitHub.
+2. On [share.streamlit.io](https://share.streamlit.io) → **New app**.
+3. **Main file path:** `streamlit_app.py`
+4. **Advanced settings → Secrets**, add:
+   ```toml
+   ANTHROPIC_API_KEY = "sk-ant-..."
+   ```
+5. **Deploy.** Subsequent pushes are picked up by hitting **Reboot** on the app page.
+
 ---
 
-## Project Documentation
+## UI / design system
 
-| File | Purpose |
-|---|---|
-| [CLAUDE.md](CLAUDE.md) | Architecture rules and module specs |
-| [DECISIONS.md](DECISIONS.md) | Architectural Decision Records |
-| [MASTER_PLAN.md](MASTER_PLAN.md) | Staged roadmap from MVP to revenue |
-| [SPEC.md](SPEC.md) | Product specification and user flows |
-| [USER_STORIES.md](USER_STORIES.md) | BA-format user stories |
-| [PROMPT_ARCHITECTURE.md](PROMPT_ARCHITECTURE.md) | How Claude API was used to build this |
+Dark surface (`oklch(0.07 0.012 290)`) with a lavender accent (`#b794ff`) and CSS-only animated 3D-feeling blob shapes in the hero. Typography pairs **Bricolage Grotesque** (display, weight 700) with **Manrope** (body) and **JetBrains Mono** (URLs, eyebrows, metadata).
+
+The HTML prototype in `index.html` is the design reference — open it locally to see the three hero layouts (Centered Spotlight / Split Console / Bottom Dock) toggleable via the Tweaks panel. Streamlit's widget styling is more constrained, so the deployed app uses the Centered Spotlight variant with CSS injection to mirror the visual language.
 
 ---
 
-## Architecture
+## Output format
 
-The app follows a simple three-stage pipeline:
+Matches **SPEC.md** § Feature 2:
 
+```json
+{
+  "title": "...",
+  "summary": "...",
+  "time_required": "...",
+  "tools": ["..."],
+  "steps": [{"title": "...", "body": "...", "time": "..."}],
+  "tips": ["..."]
+}
 ```
-YouTube URL
-    ↓
-Transcript Fetcher (youtube-transcript-api)
-    ↓
-Claude API (guide formatter prompt)
-    ↓
-PDF Generator + Email Capture
-    ↓
-User Guide Library (future)
-```
 
-All Claude API calls are isolated in `src/guide_generator.py`.
-Switching AI providers requires changing one file. (See DECISIONS.md ADR-003)
+The PDF rendering (Letter size, ReportLab) follows the spec's clean numbered-step layout with the source URL + date in the footer.
 
 ---
 
-## Built By
+## Roadmap
 
-**Randy Skiles** — AI Automation Specialist
-25+ years enterprise IT | Claude API | AWS Bedrock | MCP
+| Stage | Status | Items |
+|-------|--------|-------|
+| 1 — MVP | shipped | URL input · transcript fetch · Claude structure · PDF · email-via-mailto |
+| 1.5 | next | Server-side email delivery (SMTP/SendGrid) · privacy policy page |
+| 2 | planned | Per-IP rate limiting (SPEC.md req'd before wide promotion) · usage logging |
+| 3 | planned | Guide history (anonymous local storage) |
+| 4 | planned | Next.js rebuild + Postgres (per ADR-001) |
 
-- LinkedIn: [linkedin.com/in/randy-skiles](https://linkedin.com/in/randy-skiles)
-- GitHub: [github.com/joatsaint](https://github.com/joatsaint)
-- Related project: [enterprise-ai-pipeline](https://github.com/joatsaint/enterprise-ai-pipeline)
+## License
 
----
-
-*This project is part of a portfolio demonstrating AI-assisted product development.*
-*Built with Claude API and enterprise-grade documentation practices.*
+MIT — see `LICENSE`.

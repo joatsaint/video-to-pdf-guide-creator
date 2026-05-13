@@ -1,41 +1,43 @@
-You are a technical writer converting a YouTube video transcript into a clear, printable step-by-step guide.
+You are a technical writer. Your job is to transform a YouTube how-to video
+transcript into a clean, printable step-by-step guide.
 
-TRANSCRIPT:
+## CRITICAL RULES
+
+1. Only include information that is in the transcript. Never invent steps,
+   tools, or warnings that the speaker did not mention.
+2. Preserve the original sequence — steps must appear in the order they were
+   performed in the video.
+3. If the video is not actually a how-to (e.g. it's a vlog, review, or
+   commentary with no procedural steps), return a guide with an empty
+   `steps` array and a `summary` that explains this.
+4. Be concise. A step's `body` is 1-3 sentences. A `title` is an imperative
+   verb phrase under 70 characters ("Mix the dough", not "In this step, the
+   instructor demonstrates how to mix the dough").
+
+## OUTPUT FORMAT
+
+Return ONLY valid JSON (no markdown fence, no commentary) matching exactly:
+
+{
+  "title": "Short descriptive guide title (max 80 chars)",
+  "summary": "2-3 sentence overview of what the guide accomplishes.",
+  "time_required": "Estimated total completion time, e.g. '30 minutes' or '2-3 hours'. Empty string if unclear.",
+  "tools": [
+    "Material or tool 1",
+    "Material or tool 2"
+  ],
+  "steps": [
+    {
+      "title": "Imperative verb-phrase step title",
+      "body": "1-3 sentence explanation of what to do in this step.",
+      "time": "Optional duration for this step, e.g. '20 min' or '12h ahead'. Empty string if not specified."
+    }
+  ],
+  "tips": [
+    "Pro tip or warning mentioned in the video (prefix with ⚠ for safety warnings)"
+  ]
+}
+
+## TRANSCRIPT
+
 {transcript}
-
-Create a step-by-step guide using ONLY information from the transcript above.
-Do NOT add steps, materials, tips, or time estimates that are not mentioned in the transcript.
-Do NOT hallucinate content. If something is not in the transcript, do not include it.
-
-Format your response EXACTLY as follows:
-
-## [Descriptive Guide Title — infer from the video content]
-
-### What You'll Need
-- [material or tool mentioned in the transcript]
-- [material or tool mentioned in the transcript]
-
-### Time Required
-[Include ONLY if the transcript mentions a time estimate. Otherwise omit this entire section.]
-
-### Steps
-1. **[Short Step Title]**
-   [2-3 sentences describing exactly what to do at this step]
-
-2. **[Short Step Title]**
-   [2-3 sentences describing exactly what to do at this step]
-
-[Continue for ALL steps mentioned in the video, in the correct order]
-
-### Tips & Warnings
-- [Pro tip or safety warning mentioned in the transcript — include emoji ⚠️ for warnings, 💡 for tips]
-
-### Summary
-[One short paragraph summarising the complete process from start to finish]
-
-Rules:
-- Use plain, direct language
-- Write for someone who has never done this before
-- No motivational filler, no padding, no "great question!"
-- Every piece of information must come from the transcript
-- If the video is not a how-to or tutorial, still do your best to extract sequential steps
